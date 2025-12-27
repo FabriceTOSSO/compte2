@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Boolky - Tableau de bord</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --text-color: #333;
+            --text-light: #95a5a6;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 80px; /* Espace pour le footer */
+        }
+        
+        /* Header */
+        .app-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+        
+        /* Container principal */
+        .main-container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Section Bienvenue */
+        .welcome-section {
+            margin-bottom: 20px;
+        }
+        
+        .welcome-message {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+        
+        /* Notification de retrait */
+        .withdrawal-notification {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .withdrawal-notification strong {
+            font-size: 1.1rem;
+            margin-left: 5px;
+        }
+        
+        /* Solde principal */
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            color: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .balance-card::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .balance-label {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .balance-amount {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .balance-currency {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        /* Boutons d'action */
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .action-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        
+        .transfer-btn {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .card-btn {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        /* Historique des transactions */
+        .history-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+        }
+        
+        .transaction-list {
+            list-style: none;
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+        .transaction-info {
+            flex: 1;
+        }
+        
+        .transaction-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .transaction-date {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .amount-positive {
+            color: var(--success-color);
+        }
+        
+        .amount-negative {
+            color: var(--danger-color);
+        }
+        
+        /* Footer Navigation */
+        .app-footer {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            border-top: 1px solid #ddd;
+            padding: 15px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-item i {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-item:hover {
+            color: var(--primary-color);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="app-header">
+    <h1 class="app-title">WALLET BOOLKY</h1>
+    <img src="Image\WhatsApp Image 2025-12-27 at 09.34.19.jpeg" alt="Photo de profil" class="user-avatar">
+</header>
+
+<!-- Container principal -->
+<main class="main-container">
+    <!-- Section Bienvenue -->
+    <section class="welcome-section">
+        <p class="welcome-message">Hello Dakuyo Yewami,</p>
+    </section>
+    
+   
+    <!-- Carte de solde -->
+    <div class="balance-card">
+        <p class="balance-label">Solde disponible</p>
+        <p class="balance-amount">698,000.00</p>
+        <p class="balance-currency">XOF</p>
+    </div>
+    
+    <!-- Boutons d'action -->
+    <div class="action-buttons">
+        <button class="action-btn transfer-btn">
+            <i class="fas fa-exchange-alt"></i>
+           <a href="retrait.html" class="action-btn transfer-btn">Effectuer un virement</a>
+        </button>
+        <button class="action-btn card-btn">
+            <i class="far fa-credit-card"></i>
+            Ma carte
+        </button>
+    </div>
+    
+    <!-- Historique des transactions -->
+    <section class="history-section">
+        <h2 class="section-title">
+            <i class="fas fa-history"></i>
+            Historique des transactions
+        </h2>
+        
+        <ul class="transaction-list">
+
+            
+
+            
+
+            <li class="transaction-item">
+                <div class="transaction-info">
+                    <h3 class="transaction-title">Virement reçu - WALLET BOOLKY</h3>
+                    <p class="transaction-date">27/12/2025 08:30</p>
+                </div>
+                <span class="transaction-amount amount-positive">+200,000.00 XOF</span>
+            </li>
+
+             <li class="transaction-item">
+                <div class="transaction-info">
+                    <h3 class="transaction-title">Virement reçu - WALLET BOOLKY</h3>
+                    <p class="transaction-date">27/12/2025 08:23</p>
+                </div>
+                <span class="transaction-amount amount-positive">+498,000.00 XOF</span>
+            </li>
+
+             
+
+ 
+           
+        </ul>
+    </section>
+</main>
+
+<!-- Footer Navigation -->
+<nav class="app-footer">
+    <a href="#" class="nav-item">
+        <i class="far fa-credit-card"></i>
+        Ma carte
+    </a>
+    <a href="retrait.html" class="nav-item">
+        <i class="fas fa-exchange-alt"></i>
+        Virement
+    </a>
+    <a href="profil.html" class="nav-item active">
+        <i class="far fa-user"></i>
+        Mon compte
+    </a>
+</nav>
+
+</body>
+</html>
