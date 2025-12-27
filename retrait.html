@@ -457,13 +457,11 @@
         errorText.textContent = message;
         errorDiv.classList.add('active');
         
-        // Cacher le message après 5 secondes
         setTimeout(function() {
             errorDiv.classList.remove('active');
         }, 5000);
     }
     
-    // Fermer le modal d'erreur en cliquant à l'extérieur
     document.getElementById('errorModal').addEventListener('click', function(e) {
         if (e.target === this) {
             this.classList.remove('active');
